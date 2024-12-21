@@ -1,0 +1,131 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: SAM Template for Lambda with Docker Image and ALB Integration
+
+Globals:
+  Function:
+    Timeout: 30  # Timeout in seconds
+    MemorySize: 1024  # Memory allocation in MB
+    PackageType: Image  # Specify that you're using a container image
+    Environment:
+      Variables:
+        SQS_QUEUE_B_URL: !Ref SQSQueueB
+
+Resources:
+
+  # SQS Queue A - Event Source
+  SQSQueueA:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: QueueA
+
+  # SQS Queue B - Output Queue
+  SQSQueueB:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: QueueB
+
+  # Dead Letter Queue
+  DeadLetterQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: LambdaDLQ
+
+  # IAM Role for Lambda
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: LambdaExecutionRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - arn:aws:iam::aws:policy/AmazonSQSFullAccess
+
+  # ECR Repository for Lambda Docker Image
+  DemoLambdaImageRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: demo-native
+
+  # Lambda Function
+  ProcessMessageFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: ProcessMessageFunction
+      PackageType: Image
+      ImageUri: !Sub "${DemoLambdaImageRepository}.dkr.ecr.${AWS::Region}.amazonaws.com/demo-native:latest"
+      Role: !GetAtt LambdaExecutionRole.Arnscripts
+      Events:
+        SQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt SQSQueueA.Arn
+            BatchSize: 1
+      DeadLetterQueue:
+        Type: SQS
+        TargetArn: !GetAtt DeadLetterQueue.Arn
+
+  # Application Load Balancer
+  MyALB:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: MyALB
+      Scheme: internet-facing
+      Subnets:
+        - subnet-xxxxxxxx  # Replace with your subnet IDs
+        - subnet-yyyyyyyy
+      SecurityGroups:
+        - sg-zzzzzzzz  # Replace with your security group ID
+
+  # ALB Target Group
+  MyALBTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: LambdaTargetGroup
+      TargetType: lambda
+      Targets:
+        - Id: !GetAtt ProcessMessageFunction.Arn
+      HealthCheckEnabled: true
+      HealthCheckPath: /
+      HealthCheckIntervalSeconds: 30
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 2
+      UnhealthyThresholdCount: 2
+      Matcher:
+        HttpCode: 200
+
+  # ALB Listener
+  MyALBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref MyALB
+      Port: 80
+      Protocol: HTTP
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref MyALBTargetGroup
+
+Outputs:
+  LambdaFunction:
+    Description: "Lambda Function ARN"
+    Value: !GetAtt ProcessMessageFunction.Arn
+
+  SQSQueueAURL:
+    Description: "URL of SQS Queue A"
+    Value: !Ref SQSQueueA
+
+  SQSQueueBURL:
+    Description: "URL of SQS Queue B"
+    Value: !Ref SQSQueueB
+
+  ALBDNSName:
+    Description: "DNS Name of the ALB"
+    Value: !GetAtt MyALB.DNSName
