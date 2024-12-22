@@ -9,6 +9,11 @@ To build the project with a native runtime, use the following command:
 ```sh
 quarkus build --native -Dquarkus.native.container-build=true
 ```
+Or 
+```sh
+```sh
+quarkus build --native -Dquarkus.native.container-build=true -DskipTests
+```
 
 ## Managing the Lambda Function
 
@@ -31,15 +36,24 @@ aws cloudformation wait stack-delete-complete --stack-name quarkus-native-stack
 2. Deploy the application with guided prompts:
 
 ```sh
-sam deploy --guided --template sam.native.yaml
+sam deploy --guided
 ```
+
+The SAM default will load the template from `./template.yaml`.
+
 
 ## Invoking the Lambda Function Locally
 
-To invoke the Lambda function locally using AWS SAM, use the following command:
+To invoke the Lambda function locally using AWS SAM, use one of the following commands:
 
+For the `payload` file:
 ```sh
-sam local invoke --template sam.native.yaml --event payload.json
+sam local invoke --event payload
+```
+
+For the `payload.sqs.json` file:
+```sh
+sam local invoke --event payload.sqs.json
 ```
 
 ## Additional Information

@@ -16,4 +16,10 @@ public class ProcessingService {
         out.setResult(result);
         return out;
     }
+
+    public OutputObject process(String input) {
+        OutputObject out = new OutputObject();
+        out.setResult(input);
+        return out;
+    }
 }

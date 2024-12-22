@@ -1,0 +1,52 @@
+{
+  "Records": [
+    {
+      "messageId": "abc12345-6789-def0-ghij-klmnopqrstuv",
+      "receiptHandle": "AQEBwJnKyrHigUMZj6rYigCgxlaS3SLy0a...",
+      "body": "{\"name\": \"Alice\", \"greeting\": \"Hello\"}",
+      "attributes": {
+        "ApproximateReceiveCount": "1",
+        "SentTimestamp": "1680301234567",
+        "SenderId": "AROAJEXAMPLE",
+        "ApproximateFirstReceiveTimestamp": "1680301235567"
+      },
+      "messageAttributes": {
+        "AttributeOne": {
+          "stringValue": "Value1",
+          "binaryValue": null,
+          "stringListValues": [],
+          "binaryListValues": [],
+          "dataType": "String"
+        }
+      },
+      "md5OfBody": "098f6bcd4621d373cade4e832627b4f6",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:ap-southeast-1:123456789012:MyQueue",
+      "awsRegion": "ap-southeast-1"
+    },
+    {
+      "messageId": "uvw98765-4321-tsrq-poon-mlkjihgfedcba",
+      "receiptHandle": "AQEBwJnKyrHigUMZj6rYigCgxlaS3SLy0b...",
+      "body": "{\"name\": \"Bob\", \"greeting\": \"Hi there\"}",
+      "attributes": {
+        "ApproximateReceiveCount": "2",
+        "SentTimestamp": "1680302234567",
+        "SenderId": "AROAJEXAMPLE",
+        "ApproximateFirstReceiveTimestamp": "1680302235567"
+      },
+      "messageAttributes": {
+        "AttributeTwo": {
+          "stringValue": "Value2",
+          "binaryValue": null,
+          "stringListValues": [],
+          "binaryListValues": [],
+          "dataType": "String"
+        }
+      },
+      "md5OfBody": "ad0234829205b9033196ba818f7a872b",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:ap-southeast-1:123456789012:MyQueue",
+      "awsRegion": "ap-southeast-1"
+    }
+  ]
+}
