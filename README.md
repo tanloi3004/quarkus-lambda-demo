@@ -44,7 +44,7 @@ sam local invoke --template sam.native.yaml --event payload.json
 
 ## Additional Information
 
-- The `sam.native.yaml` file is used for deploying the native runtime.
+- The `template.yaml` file is used for deploying the native runtime.
 - The `target/manage.sh` script includes functions for creating, deleting, and invoking the Lambda function.
 
 For more details, refer to the [Quarkus AWS Lambda Guide](https://quarkus.io/guides/aws-lambda).
