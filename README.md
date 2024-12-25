@@ -61,4 +61,58 @@ sam local invoke --event payload.sqs.json
 - The `sam.native.yaml` file is used for deploying the native runtime.
 - The `target/manage.sh` script includes functions for creating, deleting, and invoking the Lambda function.
 
+## Building and Deploying with Docker
+
+To build a Docker image for the Lambda function, use the `docker/Dockerfile.lambda.native` file.
+
+### Building the Docker Image
+
+Navigate to the `docker` directory and build the Docker image:
+
+```sh
+cd docker
+docker build -t quarkus-lambda-native -f Dockerfile.lambda.native .
+```
+
+### Creating a Repository and Pushing the Image
+
+1. Create a new ECR repository:
+
+```sh
+aws ecr create-repository --repository-name quarkus-lambda-native
+```
+
+2. Tag the Docker image:
+
+```sh
+docker tag quarkus-lambda-native:latest <aws_account_id>.dkr.ecr.<region>.amazonaws.com/quarkus-lambda-native:latest
+```
+
+3. Authenticate Docker to your ECR registry:
+
+```sh
+aws ecr get-login-password --region <region> | docker login --username AWS --password-stdin <aws_account_id>.dkr.ecr.<region>.amazonaws.com
+```
+
+4. Push the Docker image to the ECR repository:
+
+```sh
+docker push <aws_account_id>.dkr.ecr.<region>.amazonaws.com/quarkus-lambda-native:latest
+```
+
+### Defining the Image for the Lambda Function
+
+Update your SAM template to use the Docker image for the Lambda function:
+
+```yaml
+Resources:
+  QuarkusLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      ImageUri: <aws_account_id>.dkr.ecr.<region>.amazonaws.com/quarkus-lambda-native:latest
+      MemorySize: 512
+      Timeout: 15
+```
+
 For more details, refer to the [Quarkus AWS Lambda Guide](https://quarkus.io/guides/aws-lambda).

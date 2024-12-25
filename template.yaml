@@ -16,6 +16,12 @@ Resources:
     Type: AWS::SQS::Queue
     Properties:
       QueueName: InputQueue
+  
+  # Input Queue
+  InputQueue2:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: InputQueue2
 
   # Output Queue
   OutputQueue:
@@ -68,6 +74,28 @@ Resources:
       Environment:
         Variables:
           DISABLE_SIGNAL_HANDLERS: true
+          
+  QuarkusLambdaImage:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      ImageUri: 807149668622.dkr.ecr.ap-southeast-1.amazonaws.com/my/test/quarkus-lambda:v1
+      MemorySize: 128
+      Timeout: 15
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Events:
+        SQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt InputQueue2.Arn
+            BatchSize: 1
+      DeadLetterQueue:
+        Type: SQS
+        TargetArn: !GetAtt DeadLetterQueue.Arn
+      Environment:
+        Variables:
+          DISABLE_SIGNAL_HANDLERS: true
+          
 Outputs:
   LambdaFunction:
     Description: "Lambda Function ARN"
@@ -76,6 +104,11 @@ Outputs:
   InputQueueURL:
     Description: "URL of Input Queue"
     Value: !Ref InputQueue
+
+  InputQueue2URL:
+    Description: "URL of Input Queue"
+    Value: !Ref InputQueue2
+
 
   OutputQueueURL:
     Description: "URL of Output Queue"
