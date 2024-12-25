@@ -1,6 +1,16 @@
 FROM public.ecr.aws/lambda/provided:al2023
 
+RUN mkdir -p /root/.cache/ms-playwright
 ENV BUILD_VERSION=1.0-SNAPSHOT
+ENV PLAYWRIGHT_CHROMIUM_PATH=/root/.cache/ms-playwright/chromium-1064
+ENV PLAYWRIGHT_BROWSERS_PATH=/root/.cache
+
+# Install dependencies and Chromium
+# RUN yum install -y wget unzip && \
+#     wget https://path/to/chromium-1064.zip -O /tmp/chromium-1064.zip && \
+#     unzip /tmp/chromium-1064.zip -d /home/harvey/.cache/ms-playwright/ && \
+#     rm /tmp/chromium-1064.zip && \
+#     yum clean all
 
 ADD target/quarkus-lambda-${BUILD_VERSION}-runner /var/runtime/bootstrap
 RUN chmod ugo+x /var/runtime/bootstrap

@@ -19,6 +19,7 @@ public class TestLambdaSQS implements RequestHandler<SQSEvent, OutputObject> {
     public OutputObject handleRequest(SQSEvent event, Context context) {
         // Safely retrieve the list of messages, defaulting to an empty list if null
         List<SQSEvent.SQSMessage> messages = event.getRecords();
+        OutputObject outputObject = new OutputObject();
         if (messages == null) {
             messages = Collections.emptyList();
             System.out.println("No records found in the SQSEvent.");
@@ -29,9 +30,9 @@ public class TestLambdaSQS implements RequestHandler<SQSEvent, OutputObject> {
             System.out.println("Received message: " + msg.getBody());
 
             // Process each message
-            service.process(msg.getBody());
+            outputObject = service.process(msg.getBody());
         }
 
-        return new OutputObject().setRequestId(context.getAwsRequestId());
+        return outputObject.setRequestId(context.getAwsRequestId());
     }
 }

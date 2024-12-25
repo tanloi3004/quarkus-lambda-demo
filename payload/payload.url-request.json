@@ -1,0 +1,28 @@
+{
+  "Records": [
+    {
+      "messageId": "abc12345-6789-def0-ghij-klmnopqrstuv",
+      "receiptHandle": "AQEBwJnKyrHigUMZj6rYigCgxlaS3SLy0a...",
+      "body": "{\"url\":\"https://www.lottemart.vn\",\"options\":[],\"requestId\":\"123e4567-e89b-12d3-a456-426614174000\"}",
+      "attributes": {
+        "ApproximateReceiveCount": "1",
+        "SentTimestamp": "1680301234567",
+        "SenderId": "AROAJEXAMPLE",
+        "ApproximateFirstReceiveTimestamp": "1680301235567"
+      },
+      "messageAttributes": {
+        "AttributeOne": {
+          "stringValue": "Value1",
+          "binaryValue": null,
+          "stringListValues": [],
+          "binaryListValues": [],
+          "dataType": "String"
+        }
+      },
+      "md5OfBody": "098f6bcd4621d373cade4e832627b4f6",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:ap-southeast-1:123456789012:MyQueue",
+      "awsRegion": "ap-southeast-1"
+    }
+  ]
+}

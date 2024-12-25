@@ -58,7 +58,7 @@ Resources:
       Handler: not.used.in.provided.runtime
       Runtime: provided.al2023
       CodeUri: target/function.zip
-      MemorySize: 128
+      MemorySize: 2048
       # Policies: AWSLambdaBasicExecutionRole
       Timeout: 15
       Role: !GetAtt LambdaExecutionRole.Arn
@@ -80,7 +80,7 @@ Resources:
     Properties:
       PackageType: Image
       ImageUri: 807149668622.dkr.ecr.ap-southeast-1.amazonaws.com/my/test/quarkus-lambda:v1
-      MemorySize: 128
+      MemorySize: 2048
       Timeout: 15
       Role: !GetAtt LambdaExecutionRole.Arn
       Events:

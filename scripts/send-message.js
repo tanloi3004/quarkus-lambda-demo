@@ -8,8 +8,12 @@ const sqs = new AWS.SQS();
 
 const sendMessage = async () => {
   const params = {
-    QueueUrl: 'https://sqs.ap-southeast-1.amazonaws.com/807149668622/InputQueue2', // Replace with Queue A URL
-    MessageBody: JSON.stringify({"name": "hahaha", "greeting": "Hello"})
+    QueueUrl: 'https://sqs.us-east-1.amazonaws.com/807149668622/InputQueue', // Replace with Queue A URL
+    MessageBody: JSON.stringify({
+      url: 'https://www.lottemart.vn',
+      options: [{ key: 'value' }],
+      request_id: uuidv4()
+    })
   };
 
   try {
